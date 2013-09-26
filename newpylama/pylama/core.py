@@ -35,6 +35,7 @@ def run(path, ignore=None, select=None, linters=DEFAULT_LINTERS, config=None,
     errors = []
     params = dict(ignore=ignore, select=select)
     code = None
+    print "all linters: ", linters
     try:
         with open(path, 'rU') as f:
             code = f.read() + '\n\n'
@@ -47,6 +48,7 @@ def run(path, ignore=None, select=None, linters=DEFAULT_LINTERS, config=None,
                 return errors
 
             for lint in linters:
+                print "lint:  ", lint
                 try:
                     linter = getattr(utils, lint)
                 except AttributeError:

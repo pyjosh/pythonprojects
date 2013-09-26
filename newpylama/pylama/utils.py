@@ -7,7 +7,7 @@ from os import path as op, environ
 from .checkers.pep8 import BaseReport, StyleGuide
 
 
-__all__ = 'pep8', 'pep257', 'mccabe', 'pyflakes', 'pylint'
+__all__ = 'pep8', 'pep257', 'mccabe', 'pyflakes', 'pylint', 'gjslint'
 
 PYLINT_RC = op.abspath(op.join(op.dirname(__file__), 'pylint.rc'))
 
@@ -65,6 +65,36 @@ def mccabe(path, code=None, complexity=8, **meta):
 
     return get_code_complexity(code, complexity, filename=path) or []
 
+def gjslint(path, code=None, **meta):
+    print "ddddddddddddddddddd"
+    """ gjslint code checking.
+
+    :return list: List of errors.
+
+    Will call main rutine always per file ! Never per direcotry
+
+    """
+    from .closure_linter import gjslint
+
+    errors = []
+    # "C:/Users/josh/Downloads/bootstrap/js/bootstrap.js"
+    records_iter = gjslint.main(["", path])
+    print "records iter: ", records_iter
+
+    import re
+    regExErrStr = re.compile(r'^Line\s(\d+),\s(E:\d+):\s(.*)')
+    current_path = None
+    for record in records_iter:
+        matchErrStr = re.match(regExErrStr, record.error_string)
+        if matchErrStr:
+            errors.append(dict(
+              type=matchErrStr.group(2),
+              lnum=matchErrStr.group(1),
+              text=matchErrStr.group(3)
+              ))
+
+    # errors - list of dict(type, msg, lnum)
+    return errors
 
 def pyflakes(path, code=None, **meta):
     """ Pyflake code checking.
