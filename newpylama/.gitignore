@@ -1,0 +1,5 @@
+.vimrc
+*.pyc
+pylama.egg-info/*
+dist
+docs/_build
