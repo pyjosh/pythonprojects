@@ -74,7 +74,7 @@ def gjslint(path, code=None, **meta):
     Will call main rutine always per file ! Never per direcotry
 
     """
-    from .closure_linter import gjslint
+    from .checkers.closure_linter import gjslint
 
     errors = []
     # "C:/Users/josh/Downloads/bootstrap/js/bootstrap.js"
