@@ -1,0 +1,4 @@
+[run]
+omit =
+    pylama/checkers/*
+    pylama/inirama.py
