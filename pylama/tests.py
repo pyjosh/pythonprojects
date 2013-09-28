@@ -50,6 +50,14 @@ class LamaCoreTest(unittest.TestCase):
         )
 
 
+class LamaJsTest(unittest.TestCase):
+
+    def test_gjslint(self):
+        args = {'path': 'dummy.js', 'linters': ['gjslint']}
+        errors = run(**args)
+        self.assertEqual(len(errors), 1231)
+
+
 class LamaTest(unittest.TestCase):
 
     def test_lama(self):
@@ -84,11 +92,13 @@ class LamaTest(unittest.TestCase):
     def test_pylint(self):
         # test pylint
         if version_info < (3, 0):
+            args = {
+                'path': 'pylama/checkers/pylint/utils.py',
+                'linters': ['pylint']}
             if platform.startswith('win'):
-                # ignore C0303 - trailing whitespace, which is handled differently on win platforms
-                errors = run('pylama/checkers/pylint/utils.py', linters=['pylint'], ignore=['C0303'])
-            else:
-                errors = run('pylama/checkers/pylint/utils.py', linters=['pylint'])
+                # trailing whitespace is handled differently on win platforms
+                args.update({'ignore': ['C0303']})
+            errors = run(**args)
             self.assertEqual(len(errors), 16)
 
     def test_checkpath(self):
@@ -152,6 +162,10 @@ class LamaTest(unittest.TestCase):
         options = parse_options(['-l', 'pep257,pep8', '-i', 'E'])
         self.assertEqual(set(options.linters), set(['pep257', 'pep8']))
         self.assertEqual(options.ignore, ['E'])
+
+        options = parse_options(['-l', 'gjslint,pep8', '-i', 'E:0010'])
+        self.assertEqual(set(options.linters), set(['gjslint', 'pep8']))
+        self.assertEqual(options.ignore, ['E:0010'])
 
         options = parse_options('-o dummy dummy.py'.split())
         self.assertEqual(
