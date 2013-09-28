@@ -1,5 +1,5 @@
 import unittest
-from sys import version_info
+from sys import version_info, platform
 
 from pylama.core import run
 from pylama.tasks import check_path, async_check_files
@@ -84,7 +84,11 @@ class LamaTest(unittest.TestCase):
     def test_pylint(self):
         # test pylint
         if version_info < (3, 0):
-            errors = run('pylama/checkers/pylint/utils.py', linters=['pylint'])
+            if platform.startswith('win'):
+                # ignore C0303 - trailing whitespace, which is handled differently on win platforms
+                errors = run('pylama/checkers/pylint/utils.py', linters=['pylint'], ignore=['C0303'])
+            else:
+                errors = run('pylama/checkers/pylint/utils.py', linters=['pylint'])
             self.assertEqual(len(errors), 16)
 
     def test_checkpath(self):
