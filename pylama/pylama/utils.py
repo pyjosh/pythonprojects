@@ -162,7 +162,7 @@ def gjslint(path, code=None, **meta):
     from .checkers.closure_linter import gjslint
 
     errors = []
-    records_iter = gjslint.main([_, path])
+    records_iter = gjslint.main(["", path])
 
     import re
     regExErrStr = re.compile(r'^Line\s(\d+),\s(E:\d+):\s(.*)')
@@ -173,7 +173,7 @@ def gjslint(path, code=None, **meta):
             errors.append(dict(
               type=matchErrStr.group(2),
               lnum=matchErrStr.group(1),
-              # due to IGNORE/SELECT errors flexibility, type is combined with the text
+              # due to errors filtering type is combined with the text
               text=" ".join([matchErrStr.group(2), matchErrStr.group(3)])
               ))
 
